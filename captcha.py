@@ -21,9 +21,10 @@ space.gravity = (0, 981)  # Gravity in pixels/sec^2
 text_color = (255, 255, 255)     # White color for text
 
 # Load the images
-skull_image = pygame.transform.scale(pygame.image.load("skull.png").convert_alpha(), (50, 50))
-bag_image   = pygame.transform.scale(pygame.image.load("bag.png").convert_alpha(), (160, 100))
-bg_image    = pygame.transform.scale(pygame.image.load("background.png"), (screen_width, screen_height))
+skull_image   = pygame.transform.scale(pygame.image.load("skull.png").convert_alpha(), (50, 50))
+bag_image     = pygame.transform.scale(pygame.image.load("bag.png").convert_alpha(), (160, 100))
+bag_sel_image = pygame.transform.scale(pygame.image.load("bag_selected.png").convert_alpha(), (160, 100))
+bg_image      = pygame.transform.scale(pygame.image.load("background.png"), (screen_width, screen_height))
 
 # Define boxes
 box_count = 5
@@ -31,6 +32,7 @@ box_width = 80
 box_height = 50
 box_spacing = 10
 boxes = []
+
 
 def create_boxes():
     boxes.clear()  # Clear existing boxes if any
@@ -42,13 +44,22 @@ def create_boxes():
         rect = pygame.Rect(x, y, box_width, box_height)
         boxes.append(rect)
 
+def draw_box_label(i, rect, text_color):
+    font = pygame.font.SysFont(None, 36)
+    text = font.render(str(i + 1), True, text_color)
+    text_rect = text.get_rect(center=rect.center)
+    screen.blit(text, text_rect)
+ 
+def draw_selected_box(selected_index):
+    if selected_index is not None and 0 <= selected_index < len(boxes):
+        rect = boxes[selected_index]
+        screen.blit(bag_sel_image, bag_sel_image.get_rect(center=rect.center))
+        draw_box_label(selected_index, rect, (0, 0, 0))
+        
 def draw_boxes():
     for i, rect in enumerate(boxes):
         screen.blit(bag_image, bag_image.get_rect(center=rect.center))
-        font = pygame.font.SysFont(None, 36)
-        text = font.render(str(i + 1), True, text_color)
-        text_rect = text.get_rect(center=rect.center)
-        screen.blit(text, text_rect)
+        draw_box_label(i, rect, text_color)
 
 # Create the ball
 def create_ball():
@@ -173,6 +184,8 @@ def main():
         ball_y = int(ball_position.y)
         skull_rect = skull_image.get_rect(center=(ball_x, ball_y))
         screen.blit(skull_image, skull_rect)
+        
+        draw_selected_box(user_guess)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
