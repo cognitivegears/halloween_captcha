@@ -1,3 +1,7 @@
+# Author: Nathaniel Byrd (cognitivegears)
+# Copyright (C) 2024 Nathaniel Byrd
+# This is free software, see LICENSE.md for more details
+
 import pygame
 import pymunk
 import random
