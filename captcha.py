@@ -56,22 +56,18 @@ def draw_boxes():
         screen.blit(bag_image, bag_image.get_rect(center=rect.center))
         drop_shadow_text(str(i + 1), rect.center)
 
-def create_ball():
-    ball_mass   = 1
-    ball_radius = 15
+def create_ball(ball_mass=1, ball_radius=15):
     moment      = pymunk.moment_for_circle(ball_mass, 0, ball_radius)
     ball_body   = pymunk.Body(ball_mass, moment)
     ball_body.position = (50, screen_height - 100)
-    
     shape = pymunk.Circle(ball_body, ball_radius)
     shape.friction   = 0.5
     shape.elasticity = 0.8
     shape.sensor     = True  # Make the shape a sensor so it's not drawn
     space.add(ball_body, shape)
-    
     return ball_body, shape
 
-def apply_random_impulse(body, min_power=800, max_power=1000, min_angle=45, max_angle=60):
+def apply_random_impulse(body, min_power=800, max_power=970, min_angle=45, max_angle=60):
     angle = random.uniform(math.radians(min_angle), math.radians(max_angle))
     power = random.uniform(min_power, max_power)
     impulse_x = power * math.cos(angle)
@@ -79,63 +75,53 @@ def apply_random_impulse(body, min_power=800, max_power=1000, min_angle=45, max_
     body.apply_impulse_at_local_point((impulse_x, -impulse_y), (0, 0))
 
 def pause_game():
-    drop_shadow_text("Click a box to guess!", (screen_width // 2, 50), color=(255, 0, 0))
+    drop_shadow_text("Click a box to guess!", (screen_width // 2, screen_height // 2 - 50), color=(255, 0, 0))
     
 def display_win():
-    drop_shadow_text("You Win!", (screen_width // 2, screen_height // 2 - 50), color=(0, 180, 0), font_size=72)
+    drop_shadow_text("CAPTCHA Unlocked!", (screen_width // 2, screen_height // 2 - 50), color=(0, 180, 0), font_size=72)
     drop_shadow_text("Press any key to exit.", (screen_width // 2, screen_height // 2 + 20), font_size=48)
     pygame.display.flip()
     
-def display_lose():
-    drop_shadow_text("You Lose!", (screen_width // 2, screen_height // 2 - 50), color=(255, 0, 0), font_size=72)
-    drop_shadow_text("Press any key to try again.", (screen_width // 2, screen_height // 2 + 20), font_size=48)
-    pygame.display.flip()
-
 def main():
     create_boxes()
     ball_body, ball_shape = create_ball()
     apply_random_impulse(ball_body)
 
-    paused = False
-    halfway_reached = False
+    paused     = False
+    game_over  = False
+    player_won = False
     user_guess = None
-    game_over = False
-    player_won = False  # Initialize the player_won variable
+    catches_remaining = 3
+    halfway_reached   = False
 
     while True:
         if game_over and player_won:
-            # Wait for any key press to exit
             for event in pygame.event.get():
                 if event.type in (pygame.QUIT, pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN):
                     pygame.quit()
                     return
             continue  # Wait without updating the display or physics
 
-        # If the game is over and the player lost
         if game_over and not player_won:
-            # Wait for any key press to restart
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    return
-                elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
-                    # Remove the old ball from the space
-                    space.remove(ball_body, ball_shape)
-                    # Reset game variables
-                    paused = False
-                    halfway_reached = False
-                    user_guess = None
-                    game_over  = False
-                    player_won = False
-                    # Create a new ball and apply impulse
-                    ball_body, ball_shape = create_ball()
-                    apply_random_impulse(ball_body)
-                    break  # Exit the event loop to restart the game
-            continue  # Wait without updating the display or physics
+                # Remove the old ball from the space
+                space.remove(ball_body, ball_shape)
+                # Reset game variables
+                paused = False
+                halfway_reached = False
+                user_guess = None
+                game_over  = False
+                player_won = False
+                user_guess = None
+                # Create a new ball and apply impulse
+                ball_body, ball_shape = create_ball()
+                apply_random_impulse(ball_body)
+                continue
 
         # Proceed with normal game loop
         screen.blit(bg_image, (0, 0))
         draw_boxes()
+        
+        drop_shadow_text(f"Catches Remaining: {catches_remaining}", (screen_width // 2, 50), color=(255, 255, 0))
 
         # Draw the skull image at the ball's position
         ball_position = ball_body.position
@@ -155,7 +141,7 @@ def main():
                 for index, rect in enumerate(boxes):
                     if rect.collidepoint(mouse_pos):
                         user_guess = index
-                        paused = False  # Resume the game
+                        paused = False
                         break
 
         if not paused and not game_over:
@@ -166,7 +152,6 @@ def main():
             paused = True
             halfway_reached = True
 
-        # Keep the pause message visible
         if paused:
             pause_game()
 
@@ -175,18 +160,19 @@ def main():
             # Determine which box the ball landed in
             ball_x = ball_body.position.x
             landed_in_box = None
-            slop = 5
+            slop = 8 
             for index, rect in enumerate(boxes):
                 if rect.left - slop <= ball_x <= rect.right + slop:
                     landed_in_box = index
                     break
             # Determine win or lose
-            if landed_in_box is not None and landed_in_box == user_guess:
-                player_won = True
-                display_win()
-            else:
-                player_won = False
-                display_lose()
+            if landed_in_box is not None:
+                if landed_in_box == user_guess:
+                    catches_remaining -= 1
+                    game_over = True
+                    if catches_remaining == 0:
+                        player_won = True
+                        display_win()
             game_over = True
 
         pygame.display.flip()
