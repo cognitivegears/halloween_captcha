@@ -18,25 +18,14 @@ fps    = 60
 space  = pymunk.Space()
 space.gravity = (0, 981)  # Gravity in pixels/sec^2
 
-text_color = (255, 255, 255)
-shadow_color = (0, 0, 0)
-font_size = 36
+boxes = []
 
-# Load the images
 skull_image   = pygame.transform.scale(pygame.image.load("skull.png").convert_alpha(), (50, 50))
 bag_image     = pygame.transform.scale(pygame.image.load("bag.png").convert_alpha(), (160, 100))
 bag_sel_image = pygame.transform.scale(pygame.image.load("bag_selected.png").convert_alpha(), (160, 100))
 bg_image      = pygame.transform.scale(pygame.image.load("background.png"), (screen_width, screen_height))
 
-# Define boxes
-box_count = 5
-box_width = 80
-box_height = 50
-box_spacing = 10
-boxes = []
-
-
-def drop_shadow_text(text, pos, font_size=font_size, color=text_color, shadow_color=shadow_color):
+def drop_shadow_text(text, pos, font_size=36, color=(255, 255, 255), shadow_color=(0, 0, 0)):
     drop_shadow_offset = 1 + (font_size // 15)
     font = pygame.font.SysFont(None, font_size)
     text_surface = font.render(text, True, shadow_color)
@@ -46,8 +35,7 @@ def drop_shadow_text(text, pos, font_size=font_size, color=text_color, shadow_co
     text_surface = font.render(text, True, color)
     screen.blit(text_surface, text_rect)
     
-
-def create_boxes():
+def create_boxes(box_count=5, box_width=80, box_height=50, box_spacing=10):
     boxes.clear()  # Clear existing boxes if any
     total_box_width = (box_width + box_spacing) * box_count - box_spacing
     start_x = screen_width - total_box_width - 100  # Move boxes further left
@@ -68,13 +56,12 @@ def draw_boxes():
         screen.blit(bag_image, bag_image.get_rect(center=rect.center))
         drop_shadow_text(str(i + 1), rect.center)
 
-# Create the ball
 def create_ball():
     ball_mass   = 1
     ball_radius = 15
     moment      = pymunk.moment_for_circle(ball_mass, 0, ball_radius)
     ball_body   = pymunk.Body(ball_mass, moment)
-    ball_body.position = (50, screen_height - 100)  # Adjust x-coordinate if needed
+    ball_body.position = (50, screen_height - 100)
     
     shape = pymunk.Circle(ball_body, ball_radius)
     shape.friction   = 0.5
@@ -84,38 +71,25 @@ def create_ball():
     
     return ball_body, shape
 
-def apply_random_impulse(body):
-    min_power = 800
-    max_power = 1000
-    min_angle = math.radians(45)
-    max_angle = math.radians(60)
-    
-    angle = random.uniform(min_angle, max_angle)
+def apply_random_impulse(body, min_power=800, max_power=1000, min_angle=45, max_angle=60):
+    angle = random.uniform(math.radians(min_angle), math.radians(max_angle))
     power = random.uniform(min_power, max_power)
     impulse_x = power * math.cos(angle)
     impulse_y = power * math.sin(angle)
-    
     body.apply_impulse_at_local_point((impulse_x, -impulse_y), (0, 0))
 
 def pause_game():
     drop_shadow_text("Click a box to guess!", (screen_width // 2, 50), color=(255, 0, 0))
     
 def display_win():
-    result_font = pygame.font.SysFont(None, 72)
-    # Display "You Win!"
     drop_shadow_text("You Win!", (screen_width // 2, screen_height // 2 - 50), color=(0, 180, 0), font_size=72)
-
-    # Display "Press any key to exit."
     drop_shadow_text("Press any key to exit.", (screen_width // 2, screen_height // 2 + 20), font_size=48)
-
     pygame.display.flip()
-    # Do not wait here
     
 def display_lose():
     drop_shadow_text("You Lose!", (screen_width // 2, screen_height // 2 - 50), color=(255, 0, 0), font_size=72)
     drop_shadow_text("Press any key to try again.", (screen_width // 2, screen_height // 2 + 20), font_size=48)
     pygame.display.flip()
-    # Do not wait here
 
 def main():
     create_boxes()
@@ -129,14 +103,10 @@ def main():
     player_won = False  # Initialize the player_won variable
 
     while True:
-        # If the game is over and the player won
         if game_over and player_won:
             # Wait for any key press to exit
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    return
-                elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type in (pygame.QUIT, pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN):
                     pygame.quit()
                     return
             continue  # Wait without updating the display or physics
