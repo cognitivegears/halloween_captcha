@@ -85,10 +85,10 @@ def create_ball():
     return ball_body, shape
 
 def apply_random_impulse(body):
-    min_power = 750
-    max_power = 970
-    min_angle = math.radians(25)
-    max_angle = math.radians(50)
+    min_power = 800
+    max_power = 1000
+    min_angle = math.radians(45)
+    max_angle = math.radians(60)
     
     angle = random.uniform(min_angle, max_angle)
     power = random.uniform(min_power, max_power)
