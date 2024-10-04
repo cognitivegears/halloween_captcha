@@ -18,7 +18,9 @@ fps    = 60
 space  = pymunk.Space()
 space.gravity = (0, 981)  # Gravity in pixels/sec^2
 
-text_color = (255, 255, 255)     # White color for text
+text_color = (255, 255, 255)
+shadow_color = (0, 0, 0)
+font_size = 36
 
 # Load the images
 skull_image   = pygame.transform.scale(pygame.image.load("skull.png").convert_alpha(), (50, 50))
@@ -34,6 +36,17 @@ box_spacing = 10
 boxes = []
 
 
+def drop_shadow_text(text, pos, font_size=font_size, color=text_color, shadow_color=shadow_color):
+    drop_shadow_offset = 1 + (font_size // 15)
+    font = pygame.font.SysFont(None, font_size)
+    text_surface = font.render(text, True, shadow_color)
+    text_rect = text_surface.get_rect(center=pos)
+    screen.blit(text_surface, (text_rect.x + drop_shadow_offset, text_rect.y + drop_shadow_offset))
+    # make the overlay text
+    text_surface = font.render(text, True, color)
+    screen.blit(text_surface, text_rect)
+    
+
 def create_boxes():
     boxes.clear()  # Clear existing boxes if any
     total_box_width = (box_width + box_spacing) * box_count - box_spacing
@@ -43,23 +56,17 @@ def create_boxes():
         x = start_x + i * (box_width + box_spacing)
         rect = pygame.Rect(x, y, box_width, box_height)
         boxes.append(rect)
-
-def draw_box_label(i, rect, text_color):
-    font = pygame.font.SysFont(None, 36)
-    text = font.render(str(i + 1), True, text_color)
-    text_rect = text.get_rect(center=rect.center)
-    screen.blit(text, text_rect)
  
 def draw_selected_box(selected_index):
     if selected_index is not None and 0 <= selected_index < len(boxes):
         rect = boxes[selected_index]
         screen.blit(bag_sel_image, bag_sel_image.get_rect(center=rect.center))
-        draw_box_label(selected_index, rect, (0, 0, 0))
+        drop_shadow_text(str(selected_index + 1), rect.center, color=(0, 0, 0), shadow_color=(255, 255, 255))
         
 def draw_boxes():
     for i, rect in enumerate(boxes):
         screen.blit(bag_image, bag_image.get_rect(center=rect.center))
-        draw_box_label(i, rect, text_color)
+        drop_shadow_text(str(i + 1), rect.center)
 
 # Create the ball
 def create_ball():
@@ -91,40 +98,22 @@ def apply_random_impulse(body):
     body.apply_impulse_at_local_point((impulse_x, -impulse_y), (0, 0))
 
 def pause_game():
-    paused_font = pygame.font.SysFont(None, 48)
-    paused_text = paused_font.render("Click a box to guess!", True, (255, 0, 0))
-    paused_rect = paused_text.get_rect(center=(screen_width / 2, 50))
-    screen.blit(paused_text, paused_rect)
-    # No need to call pygame.display.flip() here
+    drop_shadow_text("Click a box to guess!", (screen_width // 2, 50), color=(255, 0, 0))
     
 def display_win():
     result_font = pygame.font.SysFont(None, 72)
     # Display "You Win!"
-    result_text = result_font.render("You Win!", True, (0, 255, 0))
-    result_rect = result_text.get_rect(center=(screen_width / 2, screen_height / 2 - 50))
-    screen.blit(result_text, result_rect)
+    drop_shadow_text("You Win!", (screen_width // 2, screen_height // 2 - 50), color=(0, 180, 0), font_size=72)
 
     # Display "Press any key to exit."
-    prompt_font = pygame.font.SysFont(None, 48)
-    prompt_text = prompt_font.render("Press any key to exit.", True, text_color)
-    prompt_rect = prompt_text.get_rect(center=(screen_width / 2, screen_height / 2 + 20))
-    screen.blit(prompt_text, prompt_rect)
+    drop_shadow_text("Press any key to exit.", (screen_width // 2, screen_height // 2 + 20), font_size=48)
 
     pygame.display.flip()
     # Do not wait here
     
 def display_lose():
-    result_font = pygame.font.SysFont(None, 72)
-    # Display "You Lose!" and "Press any key to try again."
-    result_text = result_font.render("You Lose!", True, (255, 0, 0))
-    result_rect = result_text.get_rect(center=(screen_width / 2, screen_height / 2 - 50))
-    screen.blit(result_text, result_rect)
-
-    prompt_font = pygame.font.SysFont(None, 48)
-    prompt_text = prompt_font.render("Press any key to try again.", True, text_color)
-    prompt_rect = prompt_text.get_rect(center=(screen_width / 2, screen_height / 2 + 20))
-    screen.blit(prompt_text, prompt_rect)
-
+    drop_shadow_text("You Lose!", (screen_width // 2, screen_height // 2 - 50), color=(255, 0, 0), font_size=72)
+    drop_shadow_text("Press any key to try again.", (screen_width // 2, screen_height // 2 + 20), font_size=48)
     pygame.display.flip()
     # Do not wait here
 
