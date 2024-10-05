@@ -148,7 +148,7 @@ def main():
             # Check if the ball has landed
             if ball_body.position.y >= SCREEN_HEIGHT:
                 game_over = True
-            elif not player_won and ball_body.position.y >= SCREEN_HEIGHT - ball_shape.radius and not game_over:
+            elif not player_won and ball_body.position.y >= SCREEN_HEIGHT - BOX_HEIGHT and not game_over:
                 # Determine whether the ball landed in the user's guessed box
                 ball_x = ball_body.position.x
                 for index, rect in enumerate(boxes):
