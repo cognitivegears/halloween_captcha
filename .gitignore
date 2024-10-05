@@ -1,0 +1,17 @@
+.venv/
+venv/
+ENV/
+env/
+.python-version
+target/
+.Python
+build/
+dist/
+eggs/
+wheels/
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+.mypy_cache/
+
+
