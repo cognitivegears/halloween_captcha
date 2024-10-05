@@ -14,10 +14,10 @@ clock  = pygame.time.Clock()
 space  = pymunk.Space()
 space.gravity = GRAVITY
 
-skull_image = pygame.transform.scale(pygame.image.load(SKULL_IMAGE_NAME).convert_alpha(), (50, 50))
-bag_image = pygame.transform.scale(pygame.image.load(BAG_IMAGE_NAME).convert_alpha(), (160, 100))
-bag_sel_image = pygame.transform.scale(pygame.image.load(BAG_SEL_IMAGE_NAME).convert_alpha(), (160, 100))
-bg_image = pygame.transform.scale(pygame.image.load(BG_IMAGE_NAME), (SCREEN_WIDTH, SCREEN_HEIGHT))
+skull_image   = pygame.transform.scale(pygame.image.load(SKULL_IMAGE_NAME) .convert_alpha(), (50, 50))
+bag_image     = pygame.transform.scale(pygame.image.load(BAG_IMAGE_NAME) .convert_alpha(), (160, 100))
+bag_sel_image = pygame.transform.scale(pygame.image.load(BAG_SEL_IMAGE_NAME) .convert_alpha(), (160, 100))
+bg_image      = pygame.transform.scale(pygame.image.load(BG_IMAGE_NAME), (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 boxes = []
 
@@ -72,11 +72,11 @@ def apply_random_impulse(body, min_power=MIN_POWER, max_power=MAX_POWER, min_ang
 
 def pause_game():
     drop_shadow_text("Click a bag to guess!", (SCREEN_MIDDLE_X, SCREEN_MIDDLE_Y - 100), color=RED)
-    
+
 def display_win():
     drop_shadow_text("CAPTCHA Unlocked!", (SCREEN_MIDDLE_X, SCREEN_MIDDLE_Y - 50), color=GREEN, font_size=FONT_SIZE_LARGE)
     drop_shadow_text("Press any key to exit.", (SCREEN_MIDDLE_X, SCREEN_MIDDLE_Y+ 20), font_size=FONT_SIZE_MEDIUM)
-    
+
 def main():
     create_boxes()
     ball_body, ball_shape = create_ball()
@@ -92,7 +92,7 @@ def main():
     while True:
         screen.blit(bg_image, TOP_LEFT)
         draw_boxes()
-        
+
         if game_over:
             if player_won:
                 display_win()
