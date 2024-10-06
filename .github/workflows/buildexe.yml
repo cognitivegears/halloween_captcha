@@ -28,7 +28,7 @@ jobs:
 
       - name: Build executable
         run: |
-          pyinstaller --onefile your_script.py
+          pyinstaller --onefile captcha.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
