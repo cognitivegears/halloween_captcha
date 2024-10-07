@@ -31,7 +31,7 @@ jobs:
 
       - name: Build executable
         run: |
-          source .venv/Scripts/activate
+          .\.venv\Scripts\activate
           pyinstaller --noconfirm captcha.spec
 
       - name: Upload artifact
