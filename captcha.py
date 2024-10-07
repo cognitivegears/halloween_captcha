@@ -1,7 +1,9 @@
-import pygame
-import pymunk
+import sys
+import os
 import random
 import math
+import pygame
+import pymunk
 
 from constants import *
 
@@ -14,10 +16,18 @@ clock  = pygame.time.Clock()
 space  = pymunk.Space()
 space.gravity = GRAVITY
 
-skull_image   = pygame.transform.scale(pygame.image.load(SKULL_IMAGE_NAME) .convert_alpha(), (50, 50))
-bag_image     = pygame.transform.scale(pygame.image.load(BAG_IMAGE_NAME) .convert_alpha(), (160, 100))
-bag_sel_image = pygame.transform.scale(pygame.image.load(BAG_SEL_IMAGE_NAME) .convert_alpha(), (160, 100))
-bg_image      = pygame.transform.scale(pygame.image.load(BG_IMAGE_NAME), (SCREEN_WIDTH, SCREEN_HEIGHT))
+def load_image(filename, size):
+    if hasattr(sys, '_MEIPASS'):
+        path = os.path.join(sys._MEIPASS, 'assets', filename)
+    else:
+        path = os.path.join(os.path.dirname(__file__), 'assets', filename)
+    return pygame.transform.scale(pygame.image.load(path).convert_alpha(), size)
+
+
+skull_image   = load_image(SKULL_IMAGE_NAME, (50, 50))
+bag_image     = load_image(BAG_IMAGE_NAME, (160, 100))
+bag_sel_image = load_image(BAG_SEL_IMAGE_NAME, (160, 100))
+bg_image      = load_image(BG_IMAGE_NAME, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 boxes = []
 
@@ -30,7 +40,7 @@ def drop_shadow_text(text, pos, font_size=FONT_SIZE_SMALL, color=WHITE, shadow_c
     # make the overlay text
     text_surface = font.render(text, True, color)
     screen.blit(text_surface, text_rect)
-    
+
 def create_boxes(box_count=BOX_COUNT, box_width=BOX_WIDTH, box_height=BOX_HEIGHT, box_spacing=BOX_SPACING):
     boxes.clear()  # Clear existing boxes if any
     total_box_width = (box_width + box_spacing) * box_count - box_spacing

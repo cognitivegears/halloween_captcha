@@ -23,12 +23,16 @@ jobs:
 
       - name: Install dependencies
         run: |
+          python -m venv .venv
+          source .venv/Scripts/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install pyinstaller
 
       - name: Build executable
         run: |
-          pyinstaller --onefile captcha.py
+          source .venv/Scripts/activate
+          pyinstaller --noconfirm captcha.spec
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
