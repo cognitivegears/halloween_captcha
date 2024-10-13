@@ -10,6 +10,8 @@ I propose that it is much harder for a machine to do. Generative AI is (at least
 
 The existing CAPTCHA systems are based around our ability to perform pattern recognition, which machines have gotten really good at. We'll need to find new methods if we are to stay one step ahead.
 
+![captcha_animation](https://github.com/user-attachments/assets/b41646f3-9d20-4358-b3d4-961d6ec0e812)
+
 ## Building ##
 
 ### Run with Python ###
