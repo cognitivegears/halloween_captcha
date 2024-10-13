@@ -1,6 +1,10 @@
 """ Scary Halloween themed CAPTCHA game. The player must guess which bag the
     skull will fall into. The player has to get 3 skulls in the correct bag to
     win the game and unlock the CAPTCHA.
+    
+    Run with python, or convert to an executable with Nuitka:
+        pip install nuitka
+        python -m nuitka --standalone --windows-console-mode=disable --noinclude-unittest-mode=nofollow --include-data-files="assets\*=assets\" captcha.py
 """
 import sys
 import os
