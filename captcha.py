@@ -1,3 +1,7 @@
+""" Scary Halloween themed CAPTCHA game. The player must guess which bag the
+    skull will fall into. The player has to get 3 skulls in the correct bag to
+    win the game and unlock the CAPTCHA.
+"""
 import sys
 import os
 import random
@@ -16,6 +20,7 @@ clock  = pygame.time.Clock()
 space  = pymunk.Space()
 space.gravity = GRAVITY
 
+# Double, double, toil and trouble;
 def load_image(filename, size):
     if hasattr(sys, '_MEIPASS'):
         path = os.path.join(sys._MEIPASS, 'assets', filename)
@@ -31,6 +36,7 @@ bg_image      = load_image(BG_IMAGE_NAME, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 boxes = []
 
+# Fire burn and cauldron bubble.
 def drop_shadow_text(text, pos, font_size=FONT_SIZE_SMALL, color=WHITE, shadow_color=BLACK):
     drop_shadow_offset = 1 + (font_size // 15)
     font = pygame.font.SysFont(None, font_size)
@@ -41,6 +47,7 @@ def drop_shadow_text(text, pos, font_size=FONT_SIZE_SMALL, color=WHITE, shadow_c
     text_surface = font.render(text, True, color)
     screen.blit(text_surface, text_rect)
 
+# Fillet of a fenny snake,
 def create_boxes(box_count=BOX_COUNT, box_width=BOX_WIDTH, box_height=BOX_HEIGHT, box_spacing=BOX_SPACING):
     boxes.clear()  # Clear existing boxes if any
     total_box_width = (box_width + box_spacing) * box_count - box_spacing
@@ -50,18 +57,21 @@ def create_boxes(box_count=BOX_COUNT, box_width=BOX_WIDTH, box_height=BOX_HEIGHT
         x = start_x + i * (box_width + box_spacing)
         rect = pygame.Rect(x, y, box_width, box_height)
         boxes.append(rect)
- 
+
+# In the cauldron boil and bake;
 def draw_selected_box(selected_index):
     if selected_index is not None and 0 <= selected_index < len(boxes):
         rect = boxes[selected_index]
         screen.blit(bag_sel_image, bag_sel_image.get_rect(center=rect.center))
         drop_shadow_text(str(selected_index + 1), rect.center, color=BLACK, shadow_color=WHITE)
-        
+
+# Eye of newt and toe of frog,
 def draw_boxes():
     for i, rect in enumerate(boxes):
         screen.blit(bag_image, bag_image.get_rect(center=rect.center))
         drop_shadow_text(str(i + 1), rect.center)
 
+# Wool of bat and tongue of dog,
 def create_ball(ball_mass=BALL_MASS, ball_radius=BALL_RADIUS):
     moment      = pymunk.moment_for_circle(ball_mass, 0, ball_radius)
     ball_body   = pymunk.Body(ball_mass, moment)
@@ -73,6 +83,7 @@ def create_ball(ball_mass=BALL_MASS, ball_radius=BALL_RADIUS):
     space.add(ball_body, shape)
     return ball_body, shape
 
+# Adder's fork and blind-worm's sting,
 def apply_random_impulse(body, min_power=MIN_POWER, max_power=MAX_POWER, min_angle=MIN_ANGLE, max_angle=MAX_ANGLE):
     angle = random.uniform(math.radians(min_angle), math.radians(max_angle))
     power = random.uniform(min_power, max_power)
@@ -80,13 +91,18 @@ def apply_random_impulse(body, min_power=MIN_POWER, max_power=MAX_POWER, min_ang
     impulse_y = power * math.sin(angle)
     body.apply_impulse_at_local_point((impulse_x, -impulse_y), TOP_LEFT)
 
+# Lizard's leg and owlet's wing,
 def pause_game():
     drop_shadow_text("Click a bag to guess!", (SCREEN_MIDDLE_X, SCREEN_MIDDLE_Y - 100), color=RED)
 
+# For a charm of powerful trouble,
 def display_win():
-    drop_shadow_text("CAPTCHA Unlocked!", (SCREEN_MIDDLE_X, SCREEN_MIDDLE_Y - 50), color=GREEN, font_size=FONT_SIZE_LARGE)
-    drop_shadow_text("Press any key to exit.", (SCREEN_MIDDLE_X, SCREEN_MIDDLE_Y+ 20), font_size=FONT_SIZE_MEDIUM)
+    drop_shadow_text("CAPTCHA Unlocked!",
+        (SCREEN_MIDDLE_X, SCREEN_MIDDLE_Y - 50), color=GREEN, font_size=FONT_SIZE_LARGE)
+    drop_shadow_text("Press any key to exit.",
+        (SCREEN_MIDDLE_X, SCREEN_MIDDLE_Y+ 20), font_size=FONT_SIZE_MEDIUM)
 
+# Like a hell-broth boil and bubble.
 def main():
     create_boxes()
     ball_body, ball_shape = create_ball()
@@ -125,7 +141,8 @@ def main():
                 apply_random_impulse(ball_body)
                 continue
         else: # Game is not over
-            drop_shadow_text(f"Catches Remaining: {catches_remaining}", (SCREEN_MIDDLE_X, 50), color=YELLOW)
+            drop_shadow_text(f"Catches Remaining: {catches_remaining}",
+                (SCREEN_MIDDLE_X, 50), color=YELLOW)
             # Draw the skull image at the ball's position
             ball_position = ball_body.position
             ball_x = int(ball_position.x)
