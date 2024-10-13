@@ -1,3 +1,7 @@
+# Contest
+
+This came about as a result of a Halloween contest run on the YouTube channel LaurieWired: [LauriWired Halloween Programming Challenge 2024](https://github.com/LaurieWired/Halloween_2024_Programming_Challenge) - Video: [Programming Challenge Video](https://www.youtube.com/shorts/AAT1LVece0A). Do your worst Asuka!
+
 # Spooky Halloween CAPTCHA
 
 This is an example of an alternate CAPTCHA system, all dressed up for Halloween. As the world moves forward with Generative AI and improved machine learning, existing CAPTCHA systems will be less and less effective. This is downright _spooky_.
@@ -56,9 +60,7 @@ Follow steps 1-3 above, then:
     python -m nuitka --standalone --windows-console-mode=disable --noinclude-unittest-mode=nofollow --include-data-files="assets\*=assets\" captcha.py
 ```
 
-## Contest ##
-
-This came about as a result of a Halloween contest run on the YouTube channel LaurieWired: [LauriWired Halloween Programming Challenge 2024](https://github.com/LaurieWired/Halloween_2024_Programming_Challenge) - Video: [Programming Challenge Video](https://www.youtube.com/shorts/AAT1LVece0A). Do your worst Asuka!
+The release will be built into 
 
 ## License ##
 
