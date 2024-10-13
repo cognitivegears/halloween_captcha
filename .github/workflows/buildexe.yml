@@ -36,4 +36,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: captcha_windows
-          path: dist/*
+          path: build/captcha.dist/*
