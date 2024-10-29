@@ -60,7 +60,7 @@ Follow steps 1-3 above, then:
     python -m nuitka --standalone --windows-console-mode=disable --noinclude-unittest-mode=nofollow --include-data-files="assets\*=assets\" captcha.py
 ```
 
-The release will be built into 
+The release will be built into the `captcha.dist` directory.
 
 ## License ##
 
